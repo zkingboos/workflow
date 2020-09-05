@@ -1,0 +1,73 @@
+# This is a basic workflow to help you get started with Actions
+
+name: 'cd-workflow'
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      
+      - name: Build with Maven
+        run: |
+          mvn -B package --file pom.xml
+      - name: Package build into a zip
+        run: |
+          zip -j -r project-build.zip target/*.jar
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ format('{0}.0-SNAPSHOT', github.run_number) }}
+          release_name: "${{ format('{0} [Release #{1}]', github.event.head_commit.message, github.run_id) }}"
+          body: |
+            ## Github Actions - Continous Delivery
+            - ### Build id:
+            ${{
+              format(
+                '    > **{0}** - [#{1}][id-ref-link]',
+                github.event.head_commit.message,
+                github.sha
+              )
+            }}
+            ${{
+              format(
+                '    from [{0}][from-repository]',
+                github.repository
+              )
+            }}
+            ${{
+              format(
+                '    open in [jitpack.io][jitpack-url]'
+              )
+            }}
+            <br/>
+            --<!>--
+            Build by @${{ github.event.head_commit.committer.name }}
+            [id-ref-link]: ${{ github.event.head_commit.url }}
+            [from-repository]: ${{ github.event.repository.url }}
+            [jitpack-url]: https://jitpack.io/#${{ github.repository }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./project-build.zip
+          asset_name: project-build.zip
+          asset_content_type: application/zip
