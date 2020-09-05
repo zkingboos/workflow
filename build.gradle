@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+    id 'maven'
+}
+
+group 'com.github.zkingboos.workflow'
+version '0.0.1-GRADLE'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.18'
+    annotationProcessor 'org.projectlombok:lombok:1.18.18'
+}
