@@ -20,16 +20,24 @@ jobs:
       - name: Build with Maven
         run: |
           mvn -B package --file pom.xml
+
+      - name: Setup project version
+        run: |
+          MAVEN_PROJECT_VERSION=$(mvn -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec -q)
+          echo "Debug maven project version $MAVEN_PROJECT_VERSION"
+          echo "::set-env name=PROJECT_VERSION::$MAVEN_PROJECT_VERSION"
+
       - name: Package build into a zip
         run: |
           zip -j -r project-build.zip target/*.jar
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ format('{0}.0-SNAPSHOT', github.run_number) }}
+          tag_name: ${{ env.PROJECT_VERSION }}
           release_name: "${{ format('{0} [Release #{1}]', github.event.head_commit.message, github.run_id) }}"
           body: |
             ## Github Actions - Continous Delivery
@@ -72,7 +80,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./project-build.zip
           asset_name: project-build.zip
           asset_content_type: application/zip
