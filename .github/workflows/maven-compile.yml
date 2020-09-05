@@ -66,7 +66,7 @@ jobs:
             
             [id-ref-link]: ${{ github.event.head_commit.url }}
             [from-repository]: ${{ github.event.repository.url }}
-            [jitpack-url]: https://jitpack.io/#${{ github.repository }}
+            [jitpack-url]: https://jitpack.io/#${{ github.repository }}/${{ env.PROJECT_VERSION }}
           draft: false
           prerelease: false
 
