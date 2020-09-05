@@ -41,12 +41,14 @@ jobs:
                 github.sha
               )
             }}
+            
             ${{
               format(
                 '    from [{0}][from-repository]',
                 github.repository
               )
             }}
+            
             ${{
               format(
                 '    open in [jitpack.io][jitpack-url]'
