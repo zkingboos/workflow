@@ -4,7 +4,7 @@ name: 'cd-workflow'
 
 on:
   push:
-    branches: [ master ]
+    branches: [ parallel-build-maven ]
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
       
       - name: Build with Maven
         run: |
-          mvn -B package --file pom.xml
+          mvn -T 2C -B package --file pom.xml
 
       - name: Setup project version
         run: |
