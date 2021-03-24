@@ -43,6 +43,6 @@ jobs:
       - name: Uploud release assets
         uses: AButler/upload-release-assets@v2.0
         with:
-          files: 'build/*.jar'
+          files: 'build/libs/*.jar'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ env.PROJECT_VERSION }}
