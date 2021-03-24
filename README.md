@@ -1,1 +1,1 @@
-# Workflow Generator
+# Workflow Generator [Gradle Action]
