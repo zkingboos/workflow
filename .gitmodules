@@ -1,3 +1,4 @@
 [submodule "workflow"]
+	path = teste
 	url = https://github.com/zkingboos/workflow-generator.git
 	branch = workflow
