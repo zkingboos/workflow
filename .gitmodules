@@ -1,0 +1,4 @@
+[submodule "workflow-generator"]
+	path = .github
+	url = https://github.com/zkingboos/workflow-generator.git
+	branch = workflow
